@@ -3,9 +3,9 @@ stages:
 
 variables:
   DOCKER_IMAGE_NAME: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/kubernetes-website
-  VERSION: main-777672
+  VERSION: snapshot-initial-v1.27
   INTERNAL_PORT: 80
-  EXTERNAL_PORT: 61580
+  EXTERNAL_PORT: 61527
 
 deploy:
   stage: deploy
@@ -15,7 +15,7 @@ deploy:
   script:
     - docker info
     - docker compose up -d
-  environment: production
+  environment: production/v1.27
   tags:
     - lighthouse-docker
   rules:
