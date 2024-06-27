@@ -21,7 +21,7 @@ build:
     - ls -l
     - mkdir $TAG
     - ls -l
-    - tar -zxf $NAME -C $TAG
+    - tar --strip-components=1 -zxf $NAME -C $TAG
     - ls -l
     - cd $CI_PROJECT_DIR/$TAG
     - ls -l
