@@ -31,7 +31,10 @@ build:
     - ls -l
     - ls -l $CI_PROJECT_DIR/$TAG
     - cat $CI_PROJECT_DIR/$TAG/Dockerfile
+    - sed -i "s#COPY --from=0 /go/bin/hugo /usr/local/bin/hugo##" $CI_PROJECT_DIR/$TAG/Dockerfile
+    - sed -i "s#WORKDIR /src##" $CI_PROJECT_DIR/$TAG/Dockerfile
     - sed -i "s#USER hugo:hugo##" $CI_PROJECT_DIR/$TAG/Dockerfile
+    - sed -i "s#EXPOSE 1313##" $CI_PROJECT_DIR/$TAG/Dockerfile
     - cat $CI_PROJECT_DIR/$TAG/Dockerfile
     - echo "$DOCKERFILE_ADDITIONAL_CONTENT"
     - echo "$DOCKERFILE_ADDITIONAL_CONTENT" >> $CI_PROJECT_DIR/$TAG/Dockerfile
