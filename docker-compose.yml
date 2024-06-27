@@ -1,6 +1,7 @@
 services:
   kubernetes-website-v1.26:
     image: ${DOCKER_IMAGE_NAME}:${VERSION}
+    pull_policy: always
     restart: always
     ports:
       - ${EXTERNAL_PORT:-61526}:${INTERNAL_PORT:-80}
