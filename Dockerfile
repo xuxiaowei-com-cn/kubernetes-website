@@ -37,6 +37,7 @@ RUN echo $URL && \
     cd /website && \
     ls -l && \
     sed -i "s#url = \"https://kubernetes.io\"#url = \"https://kubernetes.xuxiaowei.com.cn\"#" /website/hugo.toml && \
+    sed -i "s#https://v1-29.docs.kubernetes.io#https://kubernetes-v1-29.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-28.docs.kubernetes.io#https://kubernetes-v1-28.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-27.docs.kubernetes.io#https://kubernetes-v1-27.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-26.docs.kubernetes.io#https://kubernetes-v1-26.xuxiaowei.com.cn#" /website/hugo.toml && \
