@@ -12,8 +12,8 @@ build:
     NAME: website
     HUGO_VERSION: 0.121.2
     DOCKERFILE_ADDITIONAL_CONTENT: |
-      ARG CI_PROJECT_DIR
-      ARG TAG
+      ARG CI_PROJECT_DIR \n
+      ARG TAG \n
       
       RUN cd $CI_PROJECT_DIR/$TAG && ls -l && npm ci && hugo --minify --environment development && ls -l $CI_PROJECT_DIR/$TAG/public
   before_script:
