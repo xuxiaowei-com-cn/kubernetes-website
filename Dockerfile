@@ -36,6 +36,7 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /website/layouts/index.html && \
     make module-init && \
     make api-reference && \
     ls -l public || echo "public 文件夹不存在" && \
@@ -55,7 +56,6 @@ ADD docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /website/public /usr/share/nginx/html
 
 RUN curl -o /usr/share/nginx/html/horizontal-slim-10_7.css https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css && \
-    sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /usr/share/nginx/html/layouts/index.html && \
     sed -i '/http {/a\    server_tokens off;' /etc/nginx/nginx.conf
 
 #RUN mkdir -p /var/hugo && \
