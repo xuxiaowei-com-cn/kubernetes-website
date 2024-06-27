@@ -19,7 +19,7 @@ build:
     - echo $TAG
     - wget $URL
     - ls -l
-    - tar -zxvf $NAME
+    - tar -zxf $NAME -C $TAG
     - ls -l
     - cd $CI_PROJECT_DIR/$TAG
     - ls -l
