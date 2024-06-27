@@ -24,11 +24,8 @@ RUN mkdir $HOME/src && \
     cd $HOME/src && \
     curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz && \
     cd "hugo-${HUGO_VERSION}" && \
-    go install --tags extended
-
-FROM docker.io/library/golang:1.20-alpine
-
-RUN apk add --no-cache \
+    go install --tags extended && \
+    apk add --no-cache \
     runuser \
     git \
     openssh-client \
