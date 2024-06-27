@@ -9,30 +9,32 @@ FROM docker.io/library/golang:1.20-alpine as builder
 LABEL maintainer="Luc Perkins <lperkins@linuxfoundation.org>"
 
 ARG HUGO_VERSION
-ARG CI_PROJECT_DIR
+ARG URL
 ARG TAG
 
-RUN apk add --no-cache make && \
-    apk add --no-cache \
+RUN echo $URL && \
+    echo $TAG && \
+    apk add --no-cache make \
     curl \
     gcc \
     g++ \
     musl-dev \
     build-base \
-    libc6-compat && \
-    mkdir $HOME/src && \
-    cd $HOME/src && \
-    curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz && \
-    cd "hugo-${HUGO_VERSION}" && \
-    go install --tags extended && \
-    apk add --no-cache \
+    libc6-compat  \
     runuser \
     git \
     openssh-client \
     rsync \
     npm && \
+    mkdir $HOME/src && \
+    cd $HOME/src && \
+    curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz && \
+    cd "hugo-${HUGO_VERSION}" && \
+    go install --tags extended && \
     npm install -D autoprefixer postcss-cli && \
-    cd $CI_PROJECT_DIR/$TAG && \
+    git clone --branch $TAG --depth 1 $URL /website && \
+    cd /website && \
+    ls -l && \
     ls -l public || echo "public 文件夹不存在" && \
     npm ci && hugo --minify --environment development && \
     ls -l public
@@ -41,13 +43,12 @@ FROM nginx:1.27.0
 
 LABEL maintainer="徐晓伟 <xuxiaowei@xuxiaowei.com.cn>"
 
-ARG CI_PROJECT_DIR
 ARG CI_PIPELINE_URL
 ARG TAG
 ENV CI_PIPELINE_URL=$CI_PIPELINE_URL
 ENV TAG=$TAG
 
-COPY --from=builder $CI_PROJECT_DIR/public /usr/share/nginx/html
+COPY --from=builder /website/public /usr/share/nginx/html
 
 #RUN mkdir -p /var/hugo && \
 #    addgroup -Sg 1000 hugo && \
