@@ -54,6 +54,10 @@ ENV TAG=$TAG
 ADD docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /website/public /usr/share/nginx/html
 
+RUN curl -o /usr/share/nginx/html/horizontal-slim-10_7.css https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css && \
+    sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /usr/share/nginx/html/layouts/index.html && \
+    sed -i '/http {/a\    server_tokens off;' /etc/nginx/nginx.conf
+
 #RUN mkdir -p /var/hugo && \
 #    addgroup -Sg 1000 hugo && \
 #    adduser -Sg hugo -u 1000 -h /var/hugo hugo && \
