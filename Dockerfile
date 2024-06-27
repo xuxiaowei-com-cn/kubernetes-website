@@ -36,6 +36,7 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    sed -i "s#京ICP备17074266号-3#鲁ICP备19009036号-1#" /website/layouts/partials/footer.html && \
     sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /website/layouts/index.html && \
     make module-init && \
     make api-reference && \
