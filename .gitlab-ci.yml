@@ -12,8 +12,8 @@ build:
     NAME: website
     HUGO_VERSION: 0.121.2
     DOCKERFILE_ADDITIONAL_CONTENT: |
-      ARG CI_PROJECT_DIR \n
-      ARG TAG \n
+      ARG CI_PROJECT_DIR
+      ARG TAG
       
       RUN cd $CI_PROJECT_DIR/$TAG && ls -l && npm ci && hugo --minify --environment development && ls -l $CI_PROJECT_DIR/$TAG/public
   before_script:
@@ -31,7 +31,8 @@ build:
     - ls -l
     - ls -l $CI_PROJECT_DIR/$TAG
     - cat $CI_PROJECT_DIR/$TAG/Dockerfile
-    - echo $DOCKERFILE_ADDITIONAL_CONTENT >> $CI_PROJECT_DIR/$TAG/Dockerfile
+    - echo "$DOCKERFILE_ADDITIONAL_CONTENT"
+    - echo "$DOCKERFILE_ADDITIONAL_CONTENT" >> $CI_PROJECT_DIR/$TAG/Dockerfile
     - cat $CI_PROJECT_DIR/$TAG/Dockerfile
     - /kaniko/executor version
     - /kaniko/executor --help
