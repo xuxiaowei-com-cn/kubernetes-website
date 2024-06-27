@@ -37,10 +37,10 @@ RUN echo $URL && \
     cd /website && \
     ls -l && \
     sed -i "s#url = \"https://kubernetes.io\"#url = \"https://kubernetes.xuxiaowei.com.cn\"#" /website/hugo.toml && \
-    sed -i "s#https://v1-29.docs.kubernetes.io#https://kubernetes-v1-29.xuxiaowei.com.cn#" /website/hugo.toml && \
-    sed -i "s#https://v1-28.docs.kubernetes.io#https://kubernetes-v1-28.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-27.docs.kubernetes.io#https://kubernetes-v1-27.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-26.docs.kubernetes.io#https://kubernetes-v1-26.xuxiaowei.com.cn#" /website/hugo.toml && \
+    sed -i "s#https://v1-25.docs.kubernetes.io#https://kubernetes-v1-25.xuxiaowei.com.cn#" /website/hugo.toml && \
+    sed -i "s#https://v1-24.docs.kubernetes.io#https://kubernetes-v1-24.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#京ICP备17074266号-3#鲁ICP备19009036号-1#" /website/layouts/partials/footer.html && \
     sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /website/layouts/index.html && \
     make module-init && \
