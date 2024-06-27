@@ -12,7 +12,8 @@ ARG HUGO_VERSION
 ARG CI_PROJECT_DIR
 ARG TAG
 
-RUN apk add --no-cache \
+RUN apk add --no-cache make && \
+    apk add --no-cache \
     curl \
     gcc \
     g++ \
