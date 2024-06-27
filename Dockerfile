@@ -8,19 +8,18 @@ FROM docker.io/library/golang:1.20-alpine as builder
 
 LABEL maintainer="Luc Perkins <lperkins@linuxfoundation.org>"
 
+ARG HUGO_VERSION
+ARG CI_PROJECT_DIR
+ARG TAG
+
 RUN apk add --no-cache \
     curl \
     gcc \
     g++ \
     musl-dev \
     build-base \
-    libc6-compat
-
-ARG HUGO_VERSION
-ARG CI_PROJECT_DIR
-ARG TAG
-
-RUN mkdir $HOME/src && \
+    libc6-compat && \
+    mkdir $HOME/src && \
     cd $HOME/src && \
     curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz && \
     cd "hugo-${HUGO_VERSION}" && \
