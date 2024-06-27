@@ -1,0 +1,7 @@
+services:
+  kubernetes-website:
+    image: ${DOCKER_IMAGE_NAME}:${VERSION}
+    restart: always
+    ports:
+      - ${EXTERNAL_PORT:-61580}:${INTERNAL_PORT:-80}
+    container_name: kubernetes-website
