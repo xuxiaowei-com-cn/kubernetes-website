@@ -25,3 +25,13 @@ build:
     - ls -l
     - cd $CI_PROJECT_DIR/$TAG
     - ls -l
+    - /kaniko/executor version
+    - /kaniko/executor --help
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}/${TAG}"
+      --dockerfile "${CI_PROJECT_DIR}/${TAG}/Dockerfile"
+      --build-arg "CI_PIPELINE_URL=${CI_PIPELINE_URL}"
+      --build-arg "HUGO_VERSION=${HUGO_VERSION}"
+      --build-arg "CI_PROJECT_DIR=${CI_PROJECT_DIR}"
+      --destination "xuxiaoweicomcn/kubernetes-website:${TAG}"
+      --destination "xuxiaoweicomcn/kubernetes-website:${TAG}-${CI_PIPELINE_ID}"
