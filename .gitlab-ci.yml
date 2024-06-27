@@ -3,7 +3,7 @@ stages:
 
 variables:
   DOCKER_IMAGE_NAME: registry.cn-qingdao.aliyuncs.com/xuxiaoweicomcn/kubernetes-website
-  VERSION: snapshot-initial-v1.30
+  VERSION: main-777638
   INTERNAL_PORT: 80
   EXTERNAL_PORT: 61580
 
