@@ -14,7 +14,8 @@ ARG TAG
 
 RUN echo $URL && \
     echo $TAG && \
-    apk add --no-cache make \
+    apk add --no-cache \
+    make \
     curl \
     gcc \
     g++ \
@@ -35,6 +36,8 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    make module-init && \
+    make api-reference && \
     ls -l public || echo "public 文件夹不存在" && \
     npm ci && hugo --minify --environment development && \
     ls -l public
@@ -48,6 +51,7 @@ ARG TAG
 ENV CI_PIPELINE_URL=$CI_PIPELINE_URL
 ENV TAG=$TAG
 
+ADD docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /website/public /usr/share/nginx/html
 
 #RUN mkdir -p /var/hugo && \

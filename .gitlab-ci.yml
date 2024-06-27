@@ -28,3 +28,5 @@ build:
       --build-arg "TAG=${TAG}"
       --destination "xuxiaoweicomcn/kubernetes-website:${TAG}"
       --destination "xuxiaoweicomcn/kubernetes-website:${TAG}-${CI_PIPELINE_ID}"
+  rules:
+    - if: $BUILD == "true"
