@@ -43,7 +43,9 @@ LABEL maintainer="徐晓伟 <xuxiaowei@xuxiaowei.com.cn>"
 
 ARG CI_PROJECT_DIR
 ARG CI_PIPELINE_URL
+ARG TAG
 ENV CI_PIPELINE_URL=$CI_PIPELINE_URL
+ENV TAG=$TAG
 
 COPY --from=builder $CI_PROJECT_DIR/public /usr/share/nginx/html
 
