@@ -15,7 +15,7 @@ build:
       ARG CI_PROJECT_DIR
       ARG TAG
       
-      RUN cd $CI_PROJECT_DIR/$TAG && ls -l && npm ci && hugo --minify --environment development && ls -l $CI_PROJECT_DIR/$TAG/public
+      RUN cd $CI_PROJECT_DIR/$TAG && ls -l && npm ci && /go/bin/hugo --minify --environment development && ls -l $CI_PROJECT_DIR/$TAG/public
   before_script:
     - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(printf "%s:%s" ${DOCKER_USERNAME} "${DOCKER_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
