@@ -36,6 +36,8 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    make module-init && \
+    make api-reference && \
     sed -i "s#url = \"https://kubernetes.io\"#url = \"https://kubernetes.xuxiaowei.com.cn\"#" /website/hugo.toml && \
     sed -i "s#https://v1-29.docs.kubernetes.io#https://kubernetes-v1-29.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-28.docs.kubernetes.io#https://kubernetes-v1-28.xuxiaowei.com.cn#" /website/hugo.toml && \
@@ -44,9 +46,7 @@ RUN echo $URL && \
     sed -i "s#京ICP备17074266号-3#鲁ICP备19009036号-1#" /website/layouts/partials/footer.html && \
     sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /website/layouts/index.html && \
     sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/font-face.css#" /website/themes/docsy/assets/scss/rtl/_main.scss && \
-    sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/font-face.css#" /website/assets/scss/rtl/_main.scss && \
-    make module-init && \
-    make api-reference && \
+    sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/font-face.css#" /website/api-ref-generator/themes/docsy/assets/scss/rtl/_main.scss && \
     ls -l public || echo "public 文件夹不存在" && \
     npm ci && hugo --minify --environment development && \
     ls -l public
