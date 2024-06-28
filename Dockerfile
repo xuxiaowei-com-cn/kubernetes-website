@@ -39,6 +39,9 @@ RUN echo $URL && \
     make module-init && \
     make api-reference && \
     sed -i "s#url = \"https://kubernetes.io\"#url = \"https://kubernetes.xuxiaowei.com.cn\"#" /website/hugo.toml && \
+    sed -i "s#https://v1-29.docs.kubernetes.io#https://kubernetes-v1-29.xuxiaowei.com.cn#" /website/hugo.toml && \
+    sed -i "s#https://v1-28.docs.kubernetes.io#https://kubernetes-v1-28.xuxiaowei.com.cn#" /website/hugo.toml && \
+    sed -i "s#https://v1-27.docs.kubernetes.io#https://kubernetes-v1-27.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-26.docs.kubernetes.io#https://kubernetes-v1-26.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-25.docs.kubernetes.io#https://kubernetes-v1-25.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-24.docs.kubernetes.io#https://kubernetes-v1-24.xuxiaowei.com.cn#" /website/hugo.toml && \
