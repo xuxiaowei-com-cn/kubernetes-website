@@ -8,8 +8,8 @@ build:
     entrypoint: [ "" ]
   variables:
     URL: https://github.com/kubernetes/website.git
-    TAG: release-1.20
-    HUGO_VERSION: 0.82.0
+    TAG: release-1.19
+    HUGO_VERSION: 0.74.3
   before_script:
     - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(printf "%s:%s" ${DOCKER_USERNAME} "${DOCKER_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
