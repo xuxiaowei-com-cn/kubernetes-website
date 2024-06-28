@@ -15,6 +15,8 @@ deploy:
   script:
     - docker info
     - docker compose up -d
+    - docker images | grep kubernetes-website
+    - docker images | grep kubernetes-website | awk '{print $3}' | xargs docker rmi || echo
   environment: production/v1.30
   tags:
     - lighthouse-docker
