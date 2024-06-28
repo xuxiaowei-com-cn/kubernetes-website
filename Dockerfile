@@ -41,7 +41,6 @@ RUN echo $URL && \
     cat /website/config.toml && \
     sed -i '180 a\[[params.versions]]\nversion = "v1.30"\ngithubbranch = "v1.30.0"\ndocsbranch = "release-1.30"\nurl = "https:\/\/kubernetes.io"' /website/config.toml && \
     cat /website/config.toml && \
-    sed -i "s#url = \"https://kubernetes.io\"#url = \"https://v1-29.docs.kubernetes.io\"#" /website/config.toml && \
     sed -i '/url = "https:\/\/v1-25.docs.kubernetes.io"/a [[params.versions]]\nversion = "v1.24"\ngithubbranch = "v1.24.16"\ndocsbranch = "release-1.24"\nurl = "https:\/\/v1-24.docs.kubernetes.io"' /website/config.toml && \
     sed -i '/url = "https:\/\/v1-24.docs.kubernetes.io"/a [[params.versions]]\nversion = "v1.23"\ngithubbranch = "v1.23.17"\ndocsbranch = "release-1.23"\nurl = "https:\/\/v1-23.docs.kubernetes.io"' /website/config.toml && \
     sed -i '/url = "https:\/\/v1-23.docs.kubernetes.io"/a [[params.versions]]\nversion = "v1.22"\ngithubbranch = "v1.22.16"\ndocsbranch = "release-1.22"\nurl = "https:\/\/v1-22.docs.kubernetes.io"' /website/config.toml && \
