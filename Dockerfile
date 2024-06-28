@@ -32,6 +32,8 @@ RUN echo $URL && \
     curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz && \
     cd "hugo-${HUGO_VERSION}" && \
     go install --tags extended && \
+    npm -v && \
+    node -v && \
     npm install -D autoprefixer postcss-cli && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
