@@ -42,7 +42,6 @@ RUN echo $URL && \
     sed -i '180 a\[[params.versions]]\nversion = "v1.29"\ngithubbranch = "v1.29.0"\ndocsbranch = "release-1.29"\nurl = "https:\/\/v1-29.docs.kubernetes.io"' /website/config.toml && \
     sed -i '180 a\[[params.versions]]\nversion = "v1.30"\ngithubbranch = "v1.30.0"\ndocsbranch = "release-1.30"\nurl = "https:\/\/kubernetes.io"' /website/config.toml && \
     cat /website/config.toml && \
-    sed -i "s#url = \"https://kubernetes.io\"#url = \"https://v1-28.docs.kubernetes.io\"#" /website/config.toml && \
     sed -i '/url = "https:\/\/v1-24.docs.kubernetes.io"/a [[params.versions]]\nversion = "v1.23"\ngithubbranch = "v1.23.17"\ndocsbranch = "release-1.23"\nurl = "https:\/\/v1-23.docs.kubernetes.io"' /website/config.toml && \
     sed -i '/url = "https:\/\/v1-23.docs.kubernetes.io"/a [[params.versions]]\nversion = "v1.22"\ngithubbranch = "v1.22.16"\ndocsbranch = "release-1.22"\nurl = "https:\/\/v1-22.docs.kubernetes.io"' /website/config.toml && \
     sed -i '/url = "https:\/\/v1-22.docs.kubernetes.io"/a [[params.versions]]\nversion = "v1.21"\ngithubbranch = "v1.21.14"\ndocsbranch = "release-1.21"\nurl = "https:\/\/v1-21.docs.kubernetes.io"' /website/config.toml && \
