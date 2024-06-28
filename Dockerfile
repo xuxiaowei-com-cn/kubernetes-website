@@ -36,14 +36,16 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    make module-init && \
+    make api-reference && \
     sed -i "s#url = \"https://kubernetes.io\"#url = \"https://kubernetes.xuxiaowei.com.cn\"#" /website/hugo.toml && \
     sed -i "s#https://v1-26.docs.kubernetes.io#https://kubernetes-v1-26.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-25.docs.kubernetes.io#https://kubernetes-v1-25.xuxiaowei.com.cn#" /website/hugo.toml && \
     sed -i "s#https://v1-24.docs.kubernetes.io#https://kubernetes-v1-24.xuxiaowei.com.cn#" /website/hugo.toml && \
-    sed -i "s#京ICP备17074266号-3#鲁ICP备19009036号#" /website/layouts/partials/footer.html && \
+    sed -i "s#京ICP备17074266号-3#鲁ICP备19009036号-1#" /website/layouts/partials/footer.html && \
     sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /website/layouts/index.html && \
-    make module-init && \
-    make api-reference && \
+    sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/font-face.css#" /website/themes/docsy/assets/scss/rtl/_main.scss && \
+    sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/font-face.css#" /website/api-ref-generator/themes/docsy/assets/scss/rtl/_main.scss && \
     ls -l public || echo "public 文件夹不存在" && \
     npm ci && hugo --minify --environment development && \
     ls -l public
@@ -61,6 +63,7 @@ ADD docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /website/public /usr/share/nginx/html
 
 RUN curl -o /usr/share/nginx/html/horizontal-slim-10_7.css https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css && \
+    curl -o /usr/share/nginx/html/font-face.css https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css && \
     sed -i '/http {/a\    server_tokens off;' /etc/nginx/nginx.conf
 
 #RUN mkdir -p /var/hugo && \
