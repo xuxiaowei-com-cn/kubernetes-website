@@ -39,6 +39,7 @@ RUN echo $URL && \
     make module-init && \
     make api-reference && \
     cat /website/config.toml && \
+    sed -i "s#url = \"https://kubernetes.io\"#url = \"https://v1-27.docs.kubernetes.io\"#" /website/config.toml && \
     sed -i '180 a\[[params.versions]]\nversion = "v1.28"\ngithubbranch = "v1.28.0"\ndocsbranch = "release-1.28"\nurl = "https:\/\/v1-28.docs.kubernetes.io"' /website/config.toml && \
     sed -i '180 a\[[params.versions]]\nversion = "v1.29"\ngithubbranch = "v1.29.0"\ndocsbranch = "release-1.29"\nurl = "https:\/\/v1-29.docs.kubernetes.io"' /website/config.toml && \
     sed -i '180 a\[[params.versions]]\nversion = "v1.30"\ngithubbranch = "v1.30.0"\ndocsbranch = "release-1.30"\nurl = "https:\/\/kubernetes.io"' /website/config.toml && \
