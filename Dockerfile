@@ -41,8 +41,7 @@ RUN echo $URL && \
     make module-init && \
     make api-reference && \
     ls -l public || echo "public 文件夹不存在" && \
-    npm ci && echo "npm ci 执行完成" || echo "npm ci 执行失败" && \
-    hugo --minify --environment development && echo "hugo --minify --environment development 执行完成" || echo "hugo --minify --environment development 执行失败" && \
+    npm ci && hugo --minify --environment development && \
     ls -l public
 
 FROM nginx:1.27.0
