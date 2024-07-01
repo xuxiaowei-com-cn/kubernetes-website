@@ -36,6 +36,9 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    cat /website/netlify.toml && \
+    sed -i "s#https://kubernetes.io/#https://kubernetes.xuxiaowei.cn/#" /website/netlify.toml && \
+    cat /website/netlify.toml && \
     make module-init && \
     make api-reference && \
     cat /website/config.toml && \
@@ -45,7 +48,6 @@ RUN echo $URL && \
     sed -i '179 a\[[params.versions]]\nversion = "v1.28"\ngithubbranch = "v1.28.0"\ndocsbranch = "release-1.28"\nurl = "https:\/\/v1-28.docs.kubernetes.io"' /website/config.toml && \
     sed -i '179 a\[[params.versions]]\nversion = "v1.29"\ngithubbranch = "v1.29.0"\ndocsbranch = "release-1.29"\nurl = "https:\/\/v1-29.docs.kubernetes.io"' /website/config.toml && \
     sed -i '179 a\[[params.versions]]\nversion = "v1.30"\ngithubbranch = "v1.30.0"\ndocsbranch = "release-1.30"\nurl = "https:\/\/kubernetes.io"' /website/config.toml && \
-    cat /website/config.toml && \
     sed -i "s#https://kubernetes.io/docs/home/#https://kubernetes.xuxiaowei.com.cn/docs/home/#" /website/config.toml && \
     sed -i "s#url = \"https://kubernetes.io\"#url = \"https://kubernetes.xuxiaowei.com.cn\"#" /website/config.toml && \
     sed -i "s#https://v1-30.docs.kubernetes.io#https://kubernetes-v1-30.xuxiaowei.com.cn#" /website/config.toml && \
@@ -58,7 +60,7 @@ RUN echo $URL && \
     sed -i "s#https://v1-23.docs.kubernetes.io#https://kubernetes-v1-23.xuxiaowei.com.cn#" /website/config.toml && \
     sed -i "s#https://v1-22.docs.kubernetes.io#https://kubernetes-v1-22.xuxiaowei.com.cn#" /website/config.toml && \
     sed -i "s#https://v1-21.docs.kubernetes.io#https://kubernetes-v1-21.xuxiaowei.com.cn#" /website/config.toml && \
-    sed -i "s#https://kubernetes.io/#https://kubernetes.xuxiaowei.cn/#" /website/netlify.toml && \
+    cat /website/config.toml && \
     sed -i "s#京ICP备17074266号-3#鲁ICP备19009036号-1#" /website/layouts/partials/footer.html && \
     sed -i "s#https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css#/horizontal-slim-10_7.css#" /website/layouts/index.html && \
     sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/font-face.css#" /website/themes/docsy/assets/scss/rtl/_main.scss && \
