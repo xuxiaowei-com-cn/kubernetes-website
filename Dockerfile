@@ -36,6 +36,9 @@ RUN echo $URL && \
     git clone --branch $TAG --depth 1 $URL /website && \
     cd /website && \
     ls -l && \
+    cat /website/netlify.toml && \
+    sed -i "s#https://kubernetes.io/#https://kubernetes.xuxiaowei.cn/#" /website/netlify.toml && \
+    cat /website/netlify.toml && \
     make module-init && \
     make api-reference && \
     cat /website/config.toml && \
