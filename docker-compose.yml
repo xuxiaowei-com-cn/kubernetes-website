@@ -1,8 +1,8 @@
 services:
-  kubernetes-website-v1.30:
+  kubernetes-website-v1.31:
     image: ${DOCKER_IMAGE_NAME}:${VERSION}
     pull_policy: always
     restart: always
     ports:
-      - ${EXTERNAL_PORT:-61530}:${INTERNAL_PORT:-80}
-    container_name: kubernetes-website-v1.30
+      - ${EXTERNAL_PORT:-61531}:${INTERNAL_PORT:-80}
+    container_name: kubernetes-website-v1.31
