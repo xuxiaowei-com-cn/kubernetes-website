@@ -1,0 +1,70 @@
+name: static
+on:
+  push:
+  pull_request:
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    container: golang:1.25-alpine
+    steps:
+      - name: Install build dependencies
+        run: |
+          apk add --no-cache make git curl build-base npm
+          git config --system --add safe.directory '*'
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install Hugo
+        run: |
+          HUGO_VERSION=$(grep ^HUGO_VERSION netlify.toml | tail -n 1 | cut -d '=' -f 2 | tr -d " \"\n")
+          echo "HUGO_VERSION=$HUGO_VERSION"
+          curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz
+          cd "hugo-${HUGO_VERSION}"
+          go install --tags extended
+      - name: Install PostCSS dependencies
+        run: npm install -D autoprefixer postcss-cli
+      - name: Initialize modules
+        run: make module-init
+      - name: Build API reference
+        run: make api-reference
+      - name: Patch docs theme font URL
+        run: |
+          sed -i "s|https://fonts.googleapis.com/css\?family=|/css/fonts-open-sans.css?family=|" ./api-ref-generator/themes/docsy/assets/scss/_variables.scss
+      - name: Install dependencies and build site
+        run: |
+          npm ci
+          hugo --minify --environment development
+      - name: Patch main.css font URL
+        run: |
+          sed -i "s#https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap#/css/fonts-open-sans.css#" ./public/scss/main.css
+      - name: Patch homepage video banner image URL
+        run: |
+          sed -i "s#https://kubernetes.io/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#" ./public/index.html
+          sed -i "s#https://kubernetes.io/zh-cn/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#" ./public/zh-cn/index.html
+      - name: Count output files
+        run: |
+          find public -type f | wc -l
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: public
+          path: |
+            public
+      - name: Publish to static site repository
+        env:
+          STATIC_REPO_TOKEN: ${{ secrets.STATIC_REPO_TOKEN }}
+        run: |
+          set -eu
+          BRANCH="static/dev-1.37/public"
+          git config --system credential.helper '!f() { echo username=x-access-token; echo password=$STATIC_REPO_TOKEN; }; f'
+          git clone --depth 1 https://github.com/xuxiaowei-com-cn/kubernetes-website-static.git /tmp/static-site
+          cd /tmp/static-site
+          git checkout --orphan "$BRANCH"
+          cp -a "$GITHUB_WORKSPACE/public/." .
+          git add -A
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+            commit -m "Publish static site for ${GITHUB_SHA}"
+          git push --force origin "$BRANCH"
+          echo "Pushed public/ to kubernetes-website-static branch $BRANCH"
+      #- name: Trigger deploy webhook
+      #  run: curl ${{ secrets.KUBERNETES_V1_37_WEBHOOK_URL }}
