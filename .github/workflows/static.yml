@@ -102,7 +102,9 @@ jobs:
           cp -a "$GITHUB_WORKSPACE/public/." .
           git add -A
           git commit -m "Publish static site for ${GITHUB_SHA}"
-          git gc --aggressive --prune=now
+          # Best-effort compaction: --aggressive can exhaust the runner's
+          # memory/disk on this repository without shrinking the pack.
+          git gc --prune=now --quiet || echo "::warning::git gc failed, continuing"
           git push --force origin "$BRANCH"
           echo "Pushed public/ to kubernetes-website-static branch $BRANCH"
       #- name: Trigger deploy webhook
