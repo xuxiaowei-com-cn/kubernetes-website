@@ -90,6 +90,7 @@ jobs:
           rm -rf public/de
           rm -rf public/es
           rm -rf public/fr
+          rm -rf public/hi
           rm -rf public/id
           rm -rf public/it
           rm -rf public/ja
