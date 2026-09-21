@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Install build dependencies
         run: |
-          apk add --no-cache make git curl build-base npm
+          apk add --no-cache make git curl build-base npm tar
           git config --system --add safe.directory '*'
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
