@@ -28,6 +28,16 @@ jobs:
           git config --system --add safe.directory '*'
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: "Restore golang cache"
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: cache-golang-repository
+        with:
+          path: |
+            /go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
       - name: Install Hugo
         run: |
           HUGO_VERSION=$(grep ^HUGO_VERSION netlify.toml | tail -n 1 | cut -d '=' -f 2 | tr -d " \"\n")
@@ -48,6 +58,14 @@ jobs:
         run: |
           npm ci
           hugo --minify --environment development
+      - name: "Save golang cache"
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && steps.cache-golang-repository.outputs.cache-hit != 'true'
+        with:
+          path: |
+            /go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
       - name: Patch main.css font URL
         run: |
           sed -i "s#https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap#/css/fonts-open-sans.css#" ./public/scss/main.css
