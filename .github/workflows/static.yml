@@ -67,6 +67,10 @@ jobs:
       - name: Publish to static site repository
         env:
           STATIC_REPO_TOKEN: ${{ secrets.STATIC_REPO_TOKEN }}
+          GIT_AUTHOR_NAME: 徐晓伟
+          GIT_AUTHOR_EMAIL: xuxiaowei@xuxiaowei.com.cn
+          GIT_COMMITTER_NAME: 徐晓伟
+          GIT_COMMITTER_EMAIL: xuxiaowei@xuxiaowei.com.cn
         run: |
           set -eu
           BRANCH="${{ github.ref_name }}/public"
@@ -76,8 +80,7 @@ jobs:
           git checkout --orphan "$BRANCH"
           cp -a "$GITHUB_WORKSPACE/public/." .
           git add -A
-          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
-            commit -m "Publish static site for ${GITHUB_SHA}"
+          git commit -m "Publish static site for ${GITHUB_SHA}"
           git push --force origin "$BRANCH"
           echo "Pushed public/ to kubernetes-website-static branch $BRANCH"
       #- name: Trigger deploy webhook
