@@ -79,6 +79,32 @@ jobs:
       - name: Show output directory sizes
         run: |
           du -h -d1 public
+      - name: Upload full artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: public-full
+          path: |
+            public
+      - name: Remove non-target language directories
+        run: |
+          rm -rf public/de
+          rm -rf public/es
+          rm -rf public/fr
+          rm -rf public/id
+          rm -rf public/it
+          rm -rf public/ja
+          rm -rf public/ko
+          rm -rf public/pl
+          rm -rf public/pt-br
+          rm -rf public/ru
+          rm -rf public/uk
+          rm -rf public/vi
+      - name: Count output files
+        run: |
+          find public -type f | wc -l
+      - name: Show output directory sizes
+        run: |
+          du -h -d1 public
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
