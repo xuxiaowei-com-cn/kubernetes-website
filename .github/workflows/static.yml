@@ -99,6 +99,7 @@ jobs:
           cp -a "$GITHUB_WORKSPACE/public/." .
           git add -A
           git commit -m "Publish static site for ${GITHUB_SHA}"
+          git gc --aggressive --prune=now
           git push --force origin "$BRANCH"
           echo "Pushed public/ to kubernetes-website-static branch $BRANCH"
       #- name: Trigger deploy webhook
