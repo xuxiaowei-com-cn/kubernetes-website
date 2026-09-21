@@ -11,6 +11,20 @@ jobs:
       - name: Install build dependencies
         run: |
           apk add --no-cache make git curl build-base npm
+          apk add --no-cache \
+          curl \
+          gcc \
+          g++ \
+          musl-dev \
+          build-base \
+          libc6-compat
+          apk add --no-cache \
+          runuser \
+          git \
+          gcompat \
+          openssh-client \
+          rsync \
+          npm
           git config --system --add safe.directory '*'
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
