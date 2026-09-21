@@ -37,9 +37,9 @@ jobs:
         run: make module-init
       - name: Build API reference
         run: make api-reference
-      - name: Patch docs theme font URL
-        run: |
-          sed -i "s|https://fonts.googleapis.com/css\?family=|/css/fonts-open-sans.css?family=|" ./api-ref-generator/themes/docsy/assets/scss/_variables.scss
+      #- name: Patch docs theme font URL
+      #  run: |
+      #    sed -i "s|https://fonts.googleapis.com/css\?family=|/css/fonts-open-sans.css?family=|" ./api-ref-generator/themes/docsy/assets/scss/_variables.scss
       - name: Install dependencies and build site
         run: |
           npm ci
