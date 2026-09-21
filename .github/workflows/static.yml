@@ -55,7 +55,7 @@ jobs:
           STATIC_REPO_TOKEN: ${{ secrets.STATIC_REPO_TOKEN }}
         run: |
           set -eu
-          BRANCH="static/dev-1.37/public"
+          BRANCH="${{ github.ref_name }}/public"
           git config --system credential.helper '!f() { echo username=x-access-token; echo password=$STATIC_REPO_TOKEN; }; f'
           git clone --depth 1 https://github.com/xuxiaowei-com-cn/kubernetes-website-static.git /tmp/static-site
           cd /tmp/static-site
@@ -67,4 +67,5 @@ jobs:
           git push --force origin "$BRANCH"
           echo "Pushed public/ to kubernetes-website-static branch $BRANCH"
       #- name: Trigger deploy webhook
+      #  if: github.event_name != 'pull_request'
       #  run: curl ${{ secrets.KUBERNETES_V1_37_WEBHOOK_URL }}
