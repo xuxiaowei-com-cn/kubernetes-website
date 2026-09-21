@@ -113,6 +113,7 @@ jobs:
           path: |
             public
       - name: Publish to static site repository
+        if: github.event_name != 'pull_request'
         env:
           STATIC_REPO_TOKEN: ${{ secrets.STATIC_REPO_TOKEN }}
           GIT_AUTHOR_NAME: 徐晓伟
@@ -123,17 +124,20 @@ jobs:
           set -eu
           BRANCH="${{ github.ref_name }}/public"
           git config --system credential.helper '!f() { echo username=x-access-token; echo password=$STATIC_REPO_TOKEN; }; f'
+          rm -rf /tmp/static-site
           git clone --depth 1 https://github.com/xuxiaowei-com-cn/kubernetes-website-static.git /tmp/static-site
           cd /tmp/static-site
           git checkout --orphan "$BRANCH"
-          cp -a "$GITHUB_WORKSPACE/public/." .
+          git rm -rf . >/dev/null 2>&1 || true
+          mkdir -p public
+          cp -a "$GITHUB_WORKSPACE/public/." public/
           git add -A
           git commit -m "Publish static site for ${GITHUB_SHA}"
           # Best-effort compaction: --aggressive can exhaust the runner's
           # memory/disk on this repository without shrinking the pack.
           git gc --prune=now --quiet || echo "::warning::git gc failed, continuing"
           git push --force origin "$BRANCH"
-          echo "Pushed public/ to kubernetes-website-static branch $BRANCH"
-      #- name: Trigger deploy webhook
-      #  if: github.event_name != 'pull_request'
-      #  run: curl ${{ secrets.KUBERNETES_V1_37_WEBHOOK_URL }}
+          echo "Pushed public/ to kubernetes-website-static branch $BRANCH under public/"
+      - name: Trigger deploy webhook
+        if: github.event_name != 'pull_request'
+        run: curl ${{ secrets.KUBERNETES_V1_37_WEBHOOK_URL }}
