@@ -73,6 +73,7 @@ jobs:
             public
       - name: Remove non-target language directories
         run: |
+          rm -rf public/bn
           rm -rf public/de
           rm -rf public/es
           rm -rf public/fr
