@@ -125,6 +125,6 @@ jobs:
           git gc --prune=now --quiet || echo "::warning::git gc failed, continuing"
           git push --force origin "$BRANCH"
           echo "Pushed public/ to kubernetes-website-static branch $BRANCH under public/"
-      - name: Trigger deploy webhook
-        if: github.event_name != 'pull_request'
-        run: curl ${{ secrets.KUBERNETES_V1_37_WEBHOOK_URL }}
+      #- name: Trigger deploy webhook
+      #  if: github.event_name != 'pull_request'
+      #  run: curl ${{ secrets.KUBERNETES_V1_37_WEBHOOK_URL }}
