@@ -34,7 +34,7 @@ jobs:
       - name: Install PostCSS dependencies
         run: npm install -D autoprefixer postcss-cli
       - name: Initialize modules
-        run: make module-init
+        run: git submodule update --init --recursive --depth 1
       - name: Build API reference
         run: make api-reference
       - name: Patch docs theme font URL
@@ -59,9 +59,6 @@ jobs:
             /go/pkg/mod
             ~/.cache/go-build
           key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
-      - name: Patch main.css font URL
-        run: |
-          sed -i "s#https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap#/css/fonts-open-sans.css#" ./public/scss/main.css
       - name: Patch homepage video banner image URL
         run: |
           sed -i "s#https://kubernetes.io/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#" ./public/index.html
@@ -133,4 +130,4 @@ jobs:
           echo "Pushed public/ to kubernetes-website-static branch $BRANCH under public/"
       #- name: Trigger deploy webhook
       #  if: github.event_name != 'pull_request'
-      #  run: curl ${{ secrets.KUBERNETES_V1_10_WEBHOOK_URL }}
+      #  run: curl ${{ secrets.KUBERNETES_V1_19_WEBHOOK_URL }}
