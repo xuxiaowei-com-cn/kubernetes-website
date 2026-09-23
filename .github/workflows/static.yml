@@ -35,8 +35,6 @@ jobs:
         run: npm install -D autoprefixer postcss-cli
       - name: Initialize modules
         run: git submodule update --init --recursive --depth 1
-      - name: Build API reference
-        run: make api-reference
       - name: Patch docs theme font URL
         run: |
           sed -i "s#https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css#/css/vazir/font-face.css#" ./themes/docsy/assets/scss/rtl/_main.scss
