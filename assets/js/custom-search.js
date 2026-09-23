@@ -1,12 +1,6 @@
 // This is copied from google implementation in the Docsy search layout
 window.renderGoogleSearchResults = () => {
-  const cx = '013288817511911618469:elfqqbqldzg'; // Todo: move this to a site variable or a build variable
-  const gcse = document.createElement('script');
-  gcse.type = 'text/javascript';
-  gcse.async = true;
-  gcse.src = (document.location.protocol === 'https:' ? 'https:' : 'http:') + '//cse.google.com/cse.js?cx=' + cx;
-  const s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(gcse, s);
+
 }
 
 window.renderPageFindSearchResults = () => {
