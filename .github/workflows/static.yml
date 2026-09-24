@@ -63,7 +63,7 @@ jobs:
 
       - name: Patch external font URLs in the build output
         run: |
-          find public -type f \( -name '*.css' -o -name '*.html' -o -name '*.js' -o -name '*.svg' -o -name '*.json' -o -name '*.xml' \) -exec sed -i \
+          find public -type f \( -name '*.css' -o -name '*.html' -o -name '*.js' -o -name '*.svg' -o -name '*.xml' \) -exec sed -i \
             -e 's|https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap|/css/fonts-open-sans.css|g' \
             -e 's|https://fonts.googleapis.com/css?family=Open+Sans|/css/fonts-open-sans.css|g' \
             -e 's|https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap|/css/fonts-rubik.css|g' \
