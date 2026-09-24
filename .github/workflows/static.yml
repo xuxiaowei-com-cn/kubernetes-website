@@ -1,0 +1,146 @@
+name: static
+on:
+  push:
+  pull_request:
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    container: golang:1.23.1-alpine3.20
+    steps:
+      - name: Install build dependencies
+        run: |
+          apk add --no-cache make git curl build-base npm tar grep
+          git config --system --add safe.directory '*'
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: "Restore golang cache"
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: cache-golang-repository
+        with:
+          path: |
+            /go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golang-
+      - name: Install Hugo
+        run: |
+          HUGO_VERSION=$(grep ^HUGO_VERSION netlify.toml | tail -n 1 | cut -d '=' -f 2 | tr -d " \"\n")
+          echo "HUGO_VERSION=$HUGO_VERSION"
+          curl -L https://github.com/gohugoio/hugo/archive/refs/tags/v${HUGO_VERSION}.tar.gz | tar -xz
+          cd "hugo-${HUGO_VERSION}"
+          go install --tags extended
+      - name: Install PostCSS dependencies
+        run: npm install -D autoprefixer postcss-cli
+      - name: Initialize modules
+        run: make module-init
+      - name: Build API reference
+        run: make api-reference
+
+      - name: Install dependencies and build site
+        run: |
+          npm ci
+          hugo --minify --environment development
+
+      - name: "Save golang cache"
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && steps.cache-golang-repository.outputs.cache-hit != 'true'
+        with:
+          path: |
+            /go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
+
+      - name: Patch external font URLs in the build output
+        run: |
+          find public -type f \( -name '*.css' -o -name '*.map' -o -name '*.html' -o -name '*.js' -o -name '*.svg' -o -name '*.json' -o -name '*.xml' \) -exec sed -i \
+            -e 's|https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap|/css/fonts-open-sans.css|g' \
+            -e 's|https://fonts.googleapis.com/css?family=Open+Sans|/css/fonts-open-sans.css|g' \
+            -e 's|https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap|/css/fonts-rubik.css|g' \
+            -e 's|https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap|/css/fonts-tajawal.css|g' \
+            -e 's|https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css|/css/vazir/font-face.css|g' {} +
+
+      - name: Check Google Fonts URLs in the build output
+        run: |
+          if grep -r "fonts.googleapis.com" ./public; then
+            echo "::error::Google Fonts URL found in the build output"
+            exit 1
+          fi
+          echo "no Google Fonts URL found"
+
+      - name: Check jsDelivr URLs in the build output
+        run: |
+          if grep -r "cdn.jsdelivr.net" ./public; then
+            echo "::error::jsDelivr URL found in the build output"
+            exit 1
+          fi
+          echo "no jsDelivr URL found"
+
+      - name: Check cse.google.com URLs in the build output
+        run: |
+          if grep -r "cse.google.com" ./public; then
+            echo "::error::cse.google.com URL found in the build output"
+            exit 1
+          fi
+          echo "no cse.google.com URL found"
+
+      - name: Check www.clarity.ms URL in the build output
+        run: |
+          if ! grep -r -q "www.clarity.ms" ./public; then
+            echo "::error::www.clarity.ms URL not found in the build output"
+            exit 1
+          fi
+          echo "www.clarity.ms URL found"
+
+      - name: Check homepage video banner image URLs before patch
+        run: grep -rn --exclude-dir=.git --exclude-dir=.github --exclude-dir=node_modules --exclude-dir='hugo-*' 'https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg' public || echo "no homepage video banner image URL found"
+      - name: Patch homepage video banner image URL in all files
+        run: find public -type f -exec sed -i 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
+      - name: Check homepage video banner image URLs after patch
+        run: |
+          if grep -rn --exclude-dir=.git --exclude-dir=.github --exclude-dir=node_modules --exclude-dir='hugo-*' 'https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg' public; then
+            echo "::error::homepage video banner image URL found in the build output"
+            exit 1
+          fi
+          echo "no homepage video banner image URL found"
+
+      - name: Count output files
+        run: |
+          find public -type f | wc -l
+      - name: Show output directory sizes
+        run: |
+          du -h -d1 public
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: public
+          path: |
+            public
+
+      - name: Publish to static site repository
+        if: github.event_name != 'pull_request'
+        env:
+          STATIC_REPO_TOKEN: ${{ secrets.STATIC_REPO_TOKEN }}
+          GIT_AUTHOR_NAME: 徐晓伟
+          GIT_AUTHOR_EMAIL: xuxiaowei@xuxiaowei.com.cn
+          GIT_COMMITTER_NAME: 徐晓伟
+          GIT_COMMITTER_EMAIL: xuxiaowei@xuxiaowei.com.cn
+        run: |
+          set -eu
+          BRANCH="${{ github.ref_name }}/public"
+          git config --system credential.helper '!f() { echo username=x-access-token; echo password=$STATIC_REPO_TOKEN; }; f'
+          rm -rf /tmp/static-site
+          git clone --depth 1 https://github.com/xuxiaowei-com-cn/kubernetes-website-static.git /tmp/static-site
+          cd /tmp/static-site
+          git checkout --orphan "$BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          mkdir -p public
+          cp -a "$GITHUB_WORKSPACE/public/." public/
+          git add -A
+          git commit -m "Publish static site for ${GITHUB_SHA}"
+          # Best-effort compaction: --aggressive can exhaust the runner's
+          # memory/disk on this repository without shrinking the pack.
+          git gc --prune=now --quiet || echo "::warning::git gc failed, continuing"
+          git push --force origin "$BRANCH"
+          echo "Pushed public/ to kubernetes-website-static branch $BRANCH under public/"
