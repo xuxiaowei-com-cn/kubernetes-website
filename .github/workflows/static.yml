@@ -88,6 +88,33 @@ jobs:
             -e 's|https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js|/js/mermaid-9.2.2.min.js|g' \
             -e 's|https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css|/embedcode/horizontal-slim-10_7.css|g' {} +
 
+      - name: Normalize _redirects for Cloudflare Pages
+        run: |
+          # Cloudflare Pages rejects the Netlify force flag ("301!"/"302!") and the 404
+          # status, and counts every rule after the first dynamic rule towards its limit
+          # of 100 dynamic rules. Drop what it rejects, strip the flag, and list the
+          # static rules before the dynamic ones so nothing is silently skipped.
+          printf '%s\n' \
+            '# Generated from static/_redirects; normalized for Cloudflare Pages.' \
+            '# Netlify-only "301!" suffixes and 404 statuses are removed, and static rules are listed before dynamic ones (CF Pages caps dynamic rules at 100).' \
+            > public/_redirects.cf
+          awk '
+            /^[[:space:]]*#/ { next }
+            /^[[:space:]]*$/ { next }
+            {
+              line = $0
+              sub(/[[:space:]]*![[:space:]]*$/, "", line)
+              if (line ~ /[[:space:]]404[[:space:]]*$/) next
+              if ($1 ~ /\*|:/) dyn[++dn] = line
+              else             sta[++sn] = line
+            }
+            END {
+              for (i = 1; i <= sn; i++) print sta[i]
+              for (i = 1; i <= dn && i <= 100; i++) print dyn[i]
+            }
+          ' public/_redirects >> public/_redirects.cf
+          mv public/_redirects.cf public/_redirects
+
       - name: Check Google Fonts URLs in the build output
         run: |
           if grep -r "fonts.googleapis.com" ./public; then
