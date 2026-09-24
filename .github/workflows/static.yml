@@ -115,7 +115,7 @@ jobs:
           BRANCH="${{ github.ref_name }}/public"
           git config --system credential.helper '!f() { echo username=x-access-token; echo password=$STATIC_REPO_TOKEN; }; f'
           rm -rf /tmp/static-site
-          git clone --depth 1 https://github.com/xuxiaowei-com-cn/kubernetes-website-static.git /tmp/static-site
+          git clone --depth 1 https://github.com/xuxiaoweicom/kubernetes-website-static.git /tmp/static-site
           cd /tmp/static-site
           git checkout --orphan "$BRANCH"
           git rm -rf . >/dev/null 2>&1 || true
