@@ -21,6 +21,11 @@ $(document).ready(function() {
 
   /* Check the presence of a cookie */
   let announcement = document.querySelector("#announcement");
+  /* The banner is only rendered while an announcement is active, but this script
+     is loaded on every page, so bail out when there is nothing to dismiss. */
+  if (announcement === null) {
+    return;
+  }
   let token = `announcement_ack_${announcement.getAttribute('data-announcement-name').replace(/\s/g, '_')}`; // Generate the unique token for announcement
   let acknowledged = getCookie(token);
   if (acknowledged === "true") {
@@ -32,6 +37,10 @@ $(document).ready(function() {
 
   /* Driver code to set the cookie */
   let button = document.querySelector('#banner-dismiss');
+  /* Announcements are dismissible only if dismissParameters.dismissible is true. */
+  if (button === null) {
+    return;
+  }
   button.removeAttribute('style');
   button.addEventListener('click', function() {
     setCookie(token, "true", 
