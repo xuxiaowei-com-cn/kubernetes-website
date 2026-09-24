@@ -115,7 +115,9 @@ jobs:
       - name: Check homepage video banner image URLs before patch
         run: grep -rn --exclude-dir=.git --exclude-dir=.github --exclude-dir=node_modules --exclude-dir='hugo-*' 'https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg' public || echo "no homepage video banner image URL found"
       - name: Patch homepage video banner image URL in all files
-        run: find public -type f -exec sed -i 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
+        run: |
+          find public -type f -exec sed -i 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
+          find public -type f -exec sed -i 's#https://kubernetes.xuxiaowei.com.cn\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
       - name: Check homepage video banner image URLs after patch
         run: |
           if grep -rn --exclude-dir=.git --exclude-dir=.github --exclude-dir=node_modules --exclude-dir='hugo-*' 'https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg' public; then
