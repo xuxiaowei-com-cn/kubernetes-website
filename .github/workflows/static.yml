@@ -97,7 +97,9 @@ jobs:
             -e 's|https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css|/embedcode/horizontal-slim-10_7.css|g' \
             -e 's|https://code.jquery.com/jquery-3.7.1.min.js|/js/jquery-3.7.1.min.js|g' \
             -e 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' \
-            -e 's#https://kubernetes.xuxiaowei.com.cn\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
+            -e 's#https://kubernetes.xuxiaowei.com.cn\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' \
+            -e 's|https://kubernetes.io/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|g' \
+            -e 's|https://kubernetes.xuxiaowei.com.cn/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|g' {} +
 
       - name: Normalize _redirects for Cloudflare Pages
         run: |
@@ -204,6 +206,19 @@ jobs:
           echo "public/kub_video_banner_homepage.jpg found in the build output"
           printf 'self-hosted homepage video banner image reference(s) in the build output: %s\n' "$(grep -rEo 'kub_video_banner_homepage\.jpg' ./public | wc -l | tr -d ' ')"
 
+      - name: Check homepage video banner (video_banner_homepage_XNZvGHlpJ_4.jpeg) after patch
+        env:
+          POSTER_URL_PATTERN: 'https?://[^" ]*/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg'
+        run: |
+          if grep -rnE "$POSTER_URL_PATTERN" ./public; then
+            echo "::error::absolute homepage video banner image URL found in the build output"
+            exit 1
+          fi
+          if [ ! -f ./public/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg ]; then
+            echo "::error::public/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg is missing from the build output"
+            exit 1
+          fi
+          echo "homepage video banner image is referenced locally"
       - name: Count output files
         run: |
           find public -type f | wc -l
