@@ -10,13 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.renderGoogleSearchResults = () => {
-  const cx = '013288817511911618469:elfqqbqldzg';
-  const gcse = document.createElement('script');
-  gcse.type = 'text/javascript';
-  gcse.async = true;
-  gcse.src = (document.location.protocol === 'https:' ? 'https:' : 'http:') + '//cse.google.com/cse.js?cx=' + cx;
-  const s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(gcse, s);
+
 }
 
 window.renderPageFindSearchResults = () => {
