@@ -86,6 +86,12 @@ jobs:
             -e 's|https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap|/css/fonts-tajawal.css|g' \
             -e 's|https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css|/css/vazir/font-face.css|g' \
             -e 's|https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js|/js/mermaid-9.2.2.min.js|g' \
+            -e 's|https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.css|/css/katex/katex-0.16.3.min.css|g' \
+            -e 's|https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.js|/js/katex-0.16.3.min.js|g' \
+            -e 's|https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/contrib/auto-render.min.js|/js/katex-0.16.3-auto-render.min.js|g' \
+            -e 's| integrity="sha512-6VMVcy7XQNyarhVuiL50FzpgCFKsyTd6YO93aaQEyET+BNaWvj0IgKR86Bf6+AmWczxAcSnL+JGjo+iStgO1gQ=="||g' \
+            -e 's| integrity="sha512-b9IKj4LCNrtCPBhceRcoYOHWW/S2q9fpl7iAJlyxYpykRj1SKM7FE9+E0NEnJ8g8ni47LBr2GuX9qzg/xeuwzQ=="||g' \
+            -e 's| integrity="sha512-iWiuBS5nt6r60fCz26Nd0Zqe0nbk1ZTIQbl3Kv7kYsX+yKMUFHzjaH2+AnM6vp2Xs+gNmaBAVWJjSmuPw76Efg=="||g' \
             -e 's|https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css|/embedcode/horizontal-slim-10_7.css|g' \
             -e 's|https://code.jquery.com/jquery-3.6.0.min.js|/js/jquery-3.6.0.min.js|g' \
             -e 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' \
