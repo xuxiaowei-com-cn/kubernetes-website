@@ -43,8 +43,12 @@ jobs:
           go install --tags extended
       - name: Initialize modules
         run: make module-init
-      - name: Build API reference
-        run: make api-reference
+      # The API reference pages are committed in this repository and upstream's
+      # netlify build (make non-production-build) does not regenerate them; the
+      # generator run by "make api-reference" cleans the committed pages first
+      # and this generator revision does not emit the newest ones
+      # (e.g. admissionregistration/validating-admission-policy-v1), which makes
+      # hugo fail on the {{< relref >}} calls in the access-authn-authz pages.
 
       - name: Install dependencies and build site
         run: |
