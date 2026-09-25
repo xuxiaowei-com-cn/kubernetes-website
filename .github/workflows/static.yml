@@ -77,7 +77,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Patch external font URLs in the build output
+      - name: Patch external font and homepage banner image URLs in the build output
         run: |
           find public -type f \( -name '*.css' -o -name '*.html' -o -name '*.js' -o -name '*.svg' \) -exec sed -i \
             -e 's|https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap|/css/fonts-open-sans.css|g' \
@@ -86,7 +86,9 @@ jobs:
             -e 's|https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap|/css/fonts-tajawal.css|g' \
             -e 's|https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.0.1/dist/font-face.css|/css/vazir/font-face.css|g' \
             -e 's|https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js|/js/mermaid-9.2.2.min.js|g' \
-            -e 's|https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css|/embedcode/horizontal-slim-10_7.css|g' {} +
+            -e 's|https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css|/embedcode/horizontal-slim-10_7.css|g' \
+            -e 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' \
+            -e 's#https://kubernetes.xuxiaowei.com.cn\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
 
       - name: Normalize _redirects for Cloudflare Pages
         run: |
@@ -155,19 +157,25 @@ jobs:
           fi
           echo "www.clarity.ms URL found"
 
-      - name: Check homepage video banner image URLs before patch
-        run: grep -rn --exclude-dir=.git --exclude-dir=.github --exclude-dir=node_modules --exclude-dir='hugo-*' 'https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg' public || echo "no homepage video banner image URL found"
-      - name: Patch homepage video banner image URL in all files
-        run: |
-          find public -type f -exec sed -i 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
-          find public -type f -exec sed -i 's#https://kubernetes.xuxiaowei.com.cn\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' {} +
       - name: Check homepage video banner image URLs after patch
+        env:
+          BANNER_URL_PATTERN: 'https://(kubernetes\.io|kubernetes\.xuxiaowei\.com\.cn)(/[^/]*)*/_common-resources/images/kub_video_banner_homepage\.jpg'
         run: |
-          if grep -rn --exclude-dir=.git --exclude-dir=.github --exclude-dir=node_modules --exclude-dir='hugo-*' 'https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg' public; then
+          if grep -rnE "$BANNER_URL_PATTERN" ./public; then
             echo "::error::homepage video banner image URL found in the build output"
             exit 1
           fi
           echo "no homepage video banner image URL found"
+
+          # The rewrite points the banner at a self-hosted copy of the image, so the build
+          # output has to contain that file and still reference it; otherwise the patched
+          # URL is just a different broken link.
+          if [ ! -f public/kub_video_banner_homepage.jpg ]; then
+            echo "::error::public/kub_video_banner_homepage.jpg is missing from the build output"
+            exit 1
+          fi
+          echo "public/kub_video_banner_homepage.jpg found in the build output"
+          printf 'self-hosted homepage video banner image reference(s) in the build output: %s\n' "$(grep -rEo 'kub_video_banner_homepage\.jpg' ./public | wc -l | tr -d ' ')"
 
       - name: Count output files
         run: |
