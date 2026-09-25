@@ -26,7 +26,8 @@ body.cid-training section.call-to-action .main-section > div.call-to-action {
   justify-content: center;
   align-items: center;
   margin: initial;
-  padding-block: 5rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 body.cid-training section.call-to-action .main-section > div.call-to-action > div {
@@ -39,7 +40,8 @@ body.cid-training section.call-to-action .main-section .cta-text {
 }
 
 body.cid-training section.call-to-action .main-section .cta-text > * {
-  margin-inline: auto;
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
   /* if max() and min() are available, use them */
   min-width: min(20em, 50vw);
