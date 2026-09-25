@@ -48,7 +48,13 @@ jobs:
 
       - name: Install dependencies and build site
         run: |
-          npm ci
+          # --ignore-scripts skips the git-dependency preparation npm runs for
+          # docsy (a github: dependency). That preparation installs docsy's own
+          # devDependencies - hugo-extended among them - whose postinstall
+          # downloads a glibc Hugo binary that cannot run in this Alpine
+          # container. docsy ships its assets in the repository and has no
+          # prepare/postinstall hook, so skipping the scripts is safe here.
+          npm ci --ignore-scripts
           hugo --minify --environment development
 
       - name: Remove source maps from the build output
