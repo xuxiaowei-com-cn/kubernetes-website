@@ -87,6 +87,14 @@ jobs:
 
       - name: Patch external font, CDN and homepage banner image URLs in the build output
         run: |
+          # The version dropdown appends the current page path to every version URL
+          # (layouts/partials/navbar-version-selector.html: {{ .url }}{{ $p.RelPermalink }}),
+          # so the "Kubernetes 文档说明" entry (https://xuxiaowei.io/t/1320, a single blog
+          # post with no sub-pages) ends up linking to deep paths that 404. Collapse them
+          # back to the post URL. In the build output such a URL always sits inside
+          # quotes, url(...) or a tag, so the [^"'`()<>]* class (instead of .*) stops at
+          # the first delimiter and cannot swallow the rest of a minified single-line
+          # page, while still covering URLs that contain spaces (page titles).
           find public -type f \( -name '*.css' -o -name '*.html' -o -name '*.js' -o -name '*.svg' \) -exec sed -i \
             -e 's|https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i&display=swap|/css/fonts-open-sans.css|g' \
             -e 's|https://fonts.googleapis.com/css?family=Open+Sans|/css/fonts-open-sans.css|g' \
@@ -103,7 +111,8 @@ jobs:
             -e 's#https://kubernetes.io\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' \
             -e 's#https://kubernetes.xuxiaowei.com.cn\(/[^/]*\)*/_common-resources/images/kub_video_banner_homepage.jpg#/kub_video_banner_homepage.jpg#g' \
             -e 's|https://kubernetes.io/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|g' \
-            -e 's|https://kubernetes.xuxiaowei.com.cn/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|g' {} +
+            -e 's|https://kubernetes.xuxiaowei.com.cn/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|/images/site-blocks/video_banner_homepage_XNZvGHlpJ_4.jpeg|g' \
+            -e 's|https://xuxiaowei.io/t/1320/[^"'\''`()<>]*|https://xuxiaowei.io/t/1320|g' {} +
 
       - name: Normalize _redirects for Cloudflare Pages
         run: |
@@ -223,6 +232,19 @@ jobs:
             exit 1
           fi
           echo "homepage video banner image is referenced locally"
+
+      - name: Check xuxiaowei.io/t/1320 URLs in the build output
+        run: |
+          # The version-dropdown patch must leave only the bare post URL
+          # https://xuxiaowei.io/t/1320. Anything directly after it other than a
+          # closing delimiter (" ' ` ) < > or a digit (unrelated /t/13201-style post
+          # IDs) is an unpatched deep link or a half-patched URL.
+          if grep -rE "https://xuxiaowei\.io/t/1320([^0-9\"'\`()<>]|$)" ./public; then
+            echo "::error::xuxiaowei.io/t/1320 URL residue found in the build output"
+            exit 1
+          fi
+          echo "no xuxiaowei.io/t/1320 URL residue found"
+
       - name: Count output files
         run: |
           find public -type f | wc -l
